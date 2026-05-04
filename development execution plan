@@ -1,0 +1,68 @@
+Based on the approved design scheme, generate a detailed R&D Execution Plan,
+with the output delivered in standard Markdown format.
+
+The plan must include the following sections:
+
+## 1. Task Breakdown
+- Decompose tasks from bottom to top according to the Controller/Service/DAO layered structure, and clearly mark dependency relationships.
+- Divide core business domains and module responsibility boundaries to ensure module decoupling, no circular dependencies, and clear one-way dependencies.
+- Split database table design by business module, specify core fields, associated fields and extended fields, and reserve scalability.
+- Clarify relationships between tables, avoid physical foreign keys, and provide ER structure description and practical table creation SQL design ideas.
+- Minimize strong cross-module dependencies to support parallel development.
+- Each task shall include: involved files/classes, estimated workload, and clear verifiable acceptance criteria.
+- Draw a complete task relationship diagram to sort out task sequence, dependency association and parallel development groups, so as to intuitively present the overall development arrangement.
+
+## 2. Development Sequence
+- Identify the critical path.
+- Mark tasks that can be developed in parallel.
+- The recommended execution order follows: entity → dao implementation → service orchestration → controller → dto
+
+## 3. Database Change List
+- List all DDL/DML changes in the execution order of migration scripts.
+
+## 4. Testing Strategy
+- Specify test types (unit test, integration test, interface test) for each business module respectively.
+- Clarify test coverage objectives and verification points.
+
+## 5. Risk List and Countermeasures
+- List technical risks, requirement risks and integration risks.
+- Provide specific response measures for each risk.
+
+---
+
+# Task X: [Full Task Name, corresponding to business module + function point]
+- **Requirement Key Points**: Concisely describe the corresponding requirements, clarify business scenarios and core functions, conform to requirement specifications, without redundancy or ambiguity.
+- **Design Scheme**: Briefly describe the layered design idea, module responsibilities and call links; ensure no cross-layer calls, no circular dependencies, and clear one-way dependencies, complying with the existing Controller/Service/DAO architecture.
+- **Database Related**:
+  - MySQL 8.0
+  - Involved Tables: Specify corresponding business tables, mark new addition / modification / associated tables
+  - ER Structure Description: Clarify table association relationships and logical foreign key fields; confirm no physical foreign keys; illustrate one-to-one / one-to-many relationships, and mark primary and secondary table relationships
+  - Table Creation / Change SQL Ideas: Explain primary key, field type, index design, logical deletion field and extended reserved fields, and comply with database specifications
+- **Development Task Split (Bottom-up)**:
+  - Entity Layer: Corresponding entity Java class (mapping database table fields)
+  - Dao Layer: Adopt Hibernate + JPA; implement data read and write, basic CRUD, and custom SQL dynamically generated according to input parameters
+  - Service Layer: Corresponding Service interface + Impl implementation class (encapsulate core business logic, transaction orchestration and rule processing)
+  - Controller Layer: Corresponding Controller Java class (expose external interfaces, complete parameter verification, permission control and result return)
+  - DTO/VO Layer: Request Req, response VO, enumeration class (parameter encapsulation for front-end and back-end interaction)
+- **Dependent Tasks**: Specify pre-dependent tasks; fill in "None" if no dependency. Circular dependencies are strictly prohibited.
+- **Estimated Workload**: x person-days (refined estimation based on task complexity)
+- **Acceptance Criteria**: Quantifiable, testable and verifiable; clarify functional, performance and specification requirements, and avoid vague descriptions.
+- **Testing Strategy**:
+  - Test Scope: Interface function, business logic, data layer CRUD, dynamic SQL, permission control, exception scenarios
+  - Test Type: Unit test, integration test, API interface test, exception test, performance benchmark test
+  - Test Focus: Correctness of JPA dynamic SQL, transaction consistency, parameter legality, data accuracy
+  - Environment Requirement: Independent MySQL database for DEV/TEST; construct normal, boundary and abnormal test data
+  - Entry & Exit Criteria: Unit test pass rate ≥90%, 100% pass of core processes, no P0/P1 defects
+- **Risk List and Countermeasures**:
+  - Risk 1: JPA dynamic SQL splicing errors / query exceptions
+    Countermeasure: Cover multi-condition combinations through unit test, integration test and API interface test; print executed SQL; adopt parameter binding to prevent injection
+  - Risk 2: Unreasonable table structure/index leading to slow queries and table lock
+    Countermeasure: Verify DDL firstly in test database; create indexes for high-frequency query fields; avoid long transactions
+  - Risk 3: Requirement understanding deviation leading to functions not meeting expectations
+    Countermeasure: Review key logic in advance; define interfaces before development; conduct phased joint debugging and verification
+  - Risk 4: Null pointer, parameter anomalies and uncaught runtime exceptions
+    Countermeasure: Unified parameter verification; non-null judgment at Service layer; global exception handling
+  - Risk 5: Schedule risk caused by delayed dependent tasks
+    Countermeasure: Develop Entity, DTO and interface layers in parallel in advance; reserve buffer time
+  - Risk 6: Risks of unauthorized access and privilege escalation of interfaces
+    Countermeasure: Add permission interception and identity verification; control the scope of data access
