@@ -1,0 +1,11 @@
+Please conduct requirement analysis for AI Programming Panoramic Development.
+
+Based on the given requirement, complete the following requirement analysis tasks:
+
+1. Paraphrase the core objectives and user value of this requirement in plain business-oriented language.
+
+2. Sort out all ambiguous, vague, undefined boundary points and uncertain descriptions in the requirement that may cause rework in subsequent development.
+
+3. Identify interaction points, dependencies and potential conflicts between this new requirement and the existing system.
+
+4. Output the complete analysis content in standard Markdown format with clear structure.
